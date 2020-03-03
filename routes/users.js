@@ -1,13 +1,19 @@
 const router = require('express').Router();
 const fs = require("fs");
-let users = fs.readFileSync("./data/users.json", 'utf8', (err, data) => {
+const path = require("path");
+const filepath = path.join(__dirname, '../data/users.json');
+let users = fs.readFileSync(filepath, 'utf8', (err, data) => {
   if (err) {
       console.log(err);
       return;
   }
   return data;
 });
-users = JSON.parse(users);
+try {
+  users = JSON.parse(users);
+} catch (err) {
+  console.log("JSON parsing error occured: ", err.message);
+}
 
 const getUsers = (req, res, next) => {
   res.send(users);
@@ -15,7 +21,7 @@ const getUsers = (req, res, next) => {
 
 const getUser = (req, res, next) => {
   const id = req.params.id;
-  debugger;
+
   const userIsFound = users.find((user) => {
     return user._id === id;
   });
