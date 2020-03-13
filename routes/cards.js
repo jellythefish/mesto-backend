@@ -1,24 +1,12 @@
 const router = require('express').Router();
-const fs = require("fs");
-const path = require("path");
-const filepath = path.join(__dirname, '../data/cards.json');
-let cards = fs.readFileSync(filepath, (err, data) => {
-  if (err) {
-      console.log(err);
-      return;
-  }
-  return data;
-});
-try {
-  cards = JSON.parse(cards);
-} catch (err) {
-  console.log("JSON parsing error occured: ", err.message);
-}
+const {
+  getCards, createCard, deleteCard, putLike, deleleLike,
+} = require('../controllers/cards');
 
-const getCards = (req, res, next) => {
-  res.send(cards);
-}
-
-router.get("/", getCards);
+router.get('/', getCards);
+router.post('/', createCard);
+router.delete('/:cardId', deleteCard);
+router.put('/:cardId/likes', putLike);
+router.delete('/:cardId/likes', deleleLike);
 
 module.exports = router;
