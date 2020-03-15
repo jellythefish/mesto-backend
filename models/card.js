@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-require('mongoose-type-url');
 
 const cardSchema = new mongoose.Schema({
   name: {
@@ -9,7 +8,10 @@ const cardSchema = new mongoose.Schema({
     maxlength: 30,
   },
   link: {
-    type: mongoose.SchemaTypes.Url,
+    type: String,
+    validate: {
+      validator: (url) => /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/.test(url),
+    },
     required: true,
   },
   owner: {

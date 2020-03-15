@@ -1,12 +1,11 @@
 const express = require('express');
-const path = require('path');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
 const router = require('./routes');
 const { logger, errorMiddleware } = require('./middlewares');
 
-const { PORT = 3000 } = process.env;
+const { PORT, DATABASE, USERID } = require('./config');
 
 // launching web-server
 const app = express();
@@ -15,7 +14,7 @@ app.listen(PORT, () => {
 });
 
 // connecting to database
-mongoose.connect('mongodb://localhost:27017/mestodb', {
+mongoose.connect(DATABASE, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
@@ -26,10 +25,9 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 app.use(logger);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, '/public')));
 app.use((req, res, next) => {
   req.user = {
-    _id: '5e6bc28ee903236464c8f3ef',
+    _id: USERID,
   };
   next();
 });
@@ -37,7 +35,7 @@ app.use((req, res, next) => {
 // adding routes
 app.use('/users', router.users);
 app.use('/cards', router.cards);
-app.get('*', (req, res) => {
+app.use('*', (req, res) => {
   res.status(404).send({ message: 'Запрашиваемый ресурс не найден!' });
 });
 app.use(errorMiddleware);
