@@ -29,8 +29,8 @@ const updateUserInfo = (req, res) => {
 };
 
 const updateUserPic = (req, res) => {
-  const { link } = req.body;
-  User.findByIdAndUpdate(req.user._id, { avatar: link }, { new: true, runValidators: true })
+  const { avatar } = req.body;
+  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
     .then((user) => res.send({ data: user }))
     .catch((err) => res.status(500).send({ message: 'Что-то пошло не так', err: err.message }));
 };
