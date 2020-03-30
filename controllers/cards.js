@@ -15,8 +15,15 @@ const createCard = (req, res) => {
 };
 
 const deleteCard = (req, res) => {
-  Card.findByIdAndDelete(req.params.cardId)
+  const { cardId } = req.params;
+  Card.findById(cardId)
     .orFail(() => new NotFoundError('Карточка не найдена'))
+    .then((card) => {
+      if (card.owner.toString() !== req.user._id) {
+        return Promise.reject(new Error('Вы не имеете прав на удаление данной карточки'));
+      }
+      return Card.findByIdAndDelete(cardId);
+    })
     .then((card) => res.send({ data: card }))
     .catch((err) => res.status(err.statusCode || 500).send({ message: 'Что-то пошло не так', err: err.message }));
 };

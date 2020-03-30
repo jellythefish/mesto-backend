@@ -1,11 +1,13 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 
 const router = require('./routes');
-const { logger, errorMiddleware } = require('./middlewares');
+const { logger, errorMiddleware, auth } = require('./middlewares');
+const { login, createUser } = require('./controllers/users');
 
-const { PORT, DATABASE, USERID } = require('./config');
+const { PORT, DATABASE } = require('./config');
 
 // launching web-server
 const app = express();
@@ -25,16 +27,13 @@ mongoose.connect(DATABASE, {
 app.use(logger);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use((req, res, next) => {
-  req.user = {
-    _id: USERID,
-  };
-  next();
-});
+app.use(cookieParser());
 
 // adding routes
-app.use('/users', router.users);
-app.use('/cards', router.cards);
+app.post('/signin', login);
+app.post('/signup', createUser);
+app.use('/users', auth, router.users);
+app.use('/cards', auth, router.cards);
 app.use('*', (req, res) => {
   res.status(404).send({ message: 'Запрашиваемый ресурс не найден!' });
 });
