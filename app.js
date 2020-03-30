@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 
 const router = require('./routes');
 const { logger, errorMiddleware, auth } = require('./middlewares');
@@ -23,7 +25,14 @@ mongoose.connect(DATABASE, {
   useUnifiedTopology: true,
 });
 
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // за 15 минут
+  max: 100, // можно совершить максимум 100 запросов с одного IP
+});
+
 // adding middlewares
+app.use(helmet());
+app.use(limiter);
 app.use(logger);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

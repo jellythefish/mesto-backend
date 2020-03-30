@@ -39,7 +39,7 @@ const putLike = (req, res) => {
     .catch((err) => res.status(err.statusCode || 500).send({ message: 'Что-то пошло не так', err: err.message }));
 };
 
-const deleleLike = (req, res) => {
+const deleteLike = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } }, // убрать _id из массива
@@ -51,5 +51,5 @@ const deleleLike = (req, res) => {
 };
 
 module.exports = {
-  getCards, createCard, deleteCard, putLike, deleleLike,
+  getCards, createCard, deleteCard, putLike, deleteLike,
 };
