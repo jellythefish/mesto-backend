@@ -4,9 +4,10 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const { errors } = require('celebrate');
 
 const router = require('./routes');
-const { logger, errorMiddleware, auth } = require('./middlewares');
+const { requestLogger, errorLogger, errorMiddleware, auth } = require('./middlewares');
 const { login, createUser } = require('./controllers/users');
 
 const { PORT, DATABASE } = require('./config');
@@ -33,17 +34,30 @@ const limiter = rateLimit({
 // adding middlewares
 app.use(helmet());
 app.use(limiter);
-app.use(logger);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// adding logger
+app.use(requestLogger);
+
 // adding routes
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
 app.post('/signin', login);
 app.post('/signup', createUser);
 app.use('/users', auth, router.users);
 app.use('/cards', auth, router.cards);
+
+
+app.use(errorLogger); // подключаем логгер ошибок
+app.use(errors()); // обработчик ошибок celebrate
+
 app.use('*', (req, res) => {
   res.status(404).send({ message: 'Запрашиваемый ресурс не найден!' });
 });
+
 app.use(errorMiddleware);

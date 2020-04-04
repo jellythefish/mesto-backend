@@ -1,20 +1,20 @@
 const Card = require('../models/card');
 const NotFoundError = require('../errors/notFoundError');
 
-const getCards = (req, res) => {
+const getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.send({ data: cards }))
-    .catch((err) => res.status(500).send({ message: 'Что-то пошло не так', err: err.message }));
+    .catch(next);
 };
 
-const createCard = (req, res) => {
+const createCard = (req, res, next) => {
   const { name, link, owner = req.user._id } = req.body;
   Card.create({ name, link, owner })
     .then((card) => res.send({ data: card }))
-    .catch((err) => res.status(500).send({ message: 'Что-то пошло не так', err: err.message }));
+    .catch(next);
 };
 
-const deleteCard = (req, res) => {
+const deleteCard = (req, res, next) => {
   const { cardId } = req.params;
   Card.findById(cardId)
     .orFail(() => new NotFoundError('Карточка не найдена'))
@@ -25,10 +25,10 @@ const deleteCard = (req, res) => {
       return Card.findByIdAndDelete(cardId);
     })
     .then((card) => res.send({ data: card }))
-    .catch((err) => res.status(err.statusCode || 500).send({ message: 'Что-то пошло не так', err: err.message }));
+    .catch(next);
 };
 
-const putLike = (req, res) => {
+const putLike = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
@@ -36,10 +36,10 @@ const putLike = (req, res) => {
   )
     .orFail(() => new NotFoundError('Карточка не найдена'))
     .then((card) => res.send({ data: card }))
-    .catch((err) => res.status(err.statusCode || 500).send({ message: 'Что-то пошло не так', err: err.message }));
+    .catch(next);
 };
 
-const deleteLike = (req, res) => {
+const deleteLike = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } }, // убрать _id из массива
@@ -47,7 +47,7 @@ const deleteLike = (req, res) => {
   )
     .orFail(() => new NotFoundError('Карточка не найдена'))
     .then((card) => res.send({ data: card }))
-    .catch((err) => res.status(err.statusCode || 500).send({ message: 'Что-то пошло не так', err: err.message }));
+    .catch(next);
 };
 
 module.exports = {

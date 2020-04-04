@@ -10,8 +10,10 @@ const auth = (req, res, next) => {
   let payload;
   try {
     payload = jwt.verify(token, JWT_SECRET);
-  } catch (err) {
-    return res.status(401).send({ message: 'Неверный токен' });
+  } catch (e) {
+    const err = new Error('Необходима авторизация');
+    err.statusCode = 401;
+    next(err);
   }
   req.user = payload;
   next();
