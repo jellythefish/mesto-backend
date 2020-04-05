@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -5,6 +6,8 @@ const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const { errors } = require('celebrate');
+const { celebrate } = require('celebrate');
+const { loginSchema, signUpSchema } = require('./models/joiSchemas');
 
 const router = require('./routes');
 const { requestLogger, errorLogger, errorMiddleware, auth } = require('./middlewares');
@@ -47,8 +50,8 @@ app.get('/crash-test', () => {
     throw new Error('Сервер сейчас упадёт');
   }, 0);
 });
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signin', celebrate(loginSchema), login);
+app.post('/signup', celebrate(signUpSchema), createUser);
 app.use('/users', auth, router.users);
 app.use('/cards', auth, router.cards);
 

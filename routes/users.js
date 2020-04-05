@@ -1,26 +1,11 @@
-const { celebrate, Joi } = require('celebrate');
-
+const { celebrate } = require('celebrate');
 const router = require('express').Router();
-const {
-  getUsers, getUser, updateUserInfo, updateUserPic,
-} = require('../controllers/users');
+const { getUsers, getUser, updateUserInfo, updateUserPic } = require('../controllers/users');
+const { getUserSchema, updateUserInfoSchema, updateUserPicSchema } = require('../models/joiSchemas');
 
 router.get('/', getUsers);
-router.get('/:id', celebrate({
-  params: Joi.object().keys({
-    id: Joi.string().alphanum().length(24),
-  }),
-}), getUser);
-router.patch('/me', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
-    about: Joi.string().required().min(2).max(30),
-  }),
-}), updateUserInfo);
-router.patch('/me/avatar', celebrate({
-  body: Joi.object().keys({
-    avatar: Joi.string().required(),
-  }),
-}), updateUserPic);
+router.get('/:id', celebrate(getUserSchema), getUser);
+router.patch('/me', celebrate(updateUserInfoSchema), updateUserInfo);
+router.patch('/me/avatar', celebrate(updateUserPicSchema), updateUserPic);
 
 module.exports = router;
