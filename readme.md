@@ -29,11 +29,11 @@ Token is provided with the request:
 Endpoints for viewing and manipulating cards that the Authenticated User
 has permissions to access.
 
-* [Get all cards](cards/get_cards.md) : `GET api.the-mesto.tk/cards`
-* [Add card](cards/add_card.md) : `POST api.the-mesto.tk/cards`
-* [Delete cards](cards/pk/delete_card.md) : `DELETE api.the-mesto.tk/cards/:cardId`
-* [Add like to card](cards/pk/put_like.md) : `PUT api.the-mesto.tk/cards/:cardId/likes`
-* [Delete like from card](cards/pk/remove_like.md) : `DELETE api.the-mesto.tk/cards/:cardId/likes`
+* [Get all cards](docs/card/get_cards.md) : `GET api.the-mesto.tk/cards`
+* [Add card](docs/card/add_card.md) : `POST api.the-mesto.tk/cards`
+* [Delete cards](docs/card/delete_card.md) : `DELETE api.the-mesto.tk/cards/:cardId`
+* [Add like to card](docs/card/put_like.md) : `PUT api.the-mesto.tk/cards/:cardId/likes`
+* [Delete like from card](docs/card/remove_like.md) : `DELETE api.the-mesto.tk/cards/:cardId/likes`
 
 ## Installation guide
 
