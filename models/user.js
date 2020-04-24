@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const isEmail = require('validator/lib/isEmail');
+const urlRegex = require('../constants/urlRegex');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -18,7 +19,7 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String,
     validate: {
-      validator: (url) => /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/.test(url),
+      validator: (url) => urlRegex.test(url),
     },
     required: true,
   },

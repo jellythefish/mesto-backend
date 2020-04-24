@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
-const { JWT_SECRET } = require('../config');
+
+const { JWT_SECRET, NODE_ENV } = process.env;
 
 // eslint-disable-next-line consistent-return
 const auth = (req, res, next) => {
@@ -9,9 +10,11 @@ const auth = (req, res, next) => {
   }
   let payload;
   try {
-    payload = jwt.verify(token, JWT_SECRET);
-  } catch (err) {
-    return res.status(401).send({ message: 'Неверный токен' });
+    payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret');
+  } catch (e) {
+    const err = new Error('Необходима авторизация');
+    err.statusCode = 401;
+    next(err);
   }
   req.user = payload;
   next();
