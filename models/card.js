@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const urlRegex = require('../constants/urlRegex');
 
 const cardSchema = new mongoose.Schema({
   name: {
@@ -10,7 +11,7 @@ const cardSchema = new mongoose.Schema({
   link: {
     type: String,
     validate: {
-      validator: (url) => /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/.test(url),
+      validator: (url) => urlRegex.test(url),
     },
     required: true,
   },

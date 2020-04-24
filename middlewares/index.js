@@ -1,6 +1,6 @@
 const { requestLogger, errorLogger } = require('./logger');
 const errorMiddleware = require('./error');
 const auth = require('./auth');
-const urlRegex = require('./regex-weburl');
+const joiSchemas = require('./joiSchemas');
 
-module.exports = { requestLogger, errorLogger, errorMiddleware, auth, urlRegex };
+module.exports = { requestLogger, errorLogger, errorMiddleware, auth, joiSchemas };

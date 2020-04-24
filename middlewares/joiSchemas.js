@@ -1,5 +1,5 @@
 const { Joi } = require('celebrate');
-const { urlRegex } = require('../middlewares');
+const urlRegex = require('../constants/urlRegex');
 
 const loginSchema = {
   body: Joi.object().keys({
@@ -44,19 +44,7 @@ const createCardSchema = {
   }),
 };
 
-const deleteCardSchema = {
-  params: Joi.object().keys({
-    cardId: Joi.string().alphanum().length(24),
-  }),
-};
-
-const putLikeSchema = {
-  params: Joi.object().keys({
-    cardId: Joi.string().alphanum().length(24),
-  }),
-};
-
-const deleteLikeSchema = {
+const cardIdSchema = {
   params: Joi.object().keys({
     cardId: Joi.string().alphanum().length(24),
   }),
@@ -69,7 +57,5 @@ module.exports = {
   updateUserInfoSchema,
   updateUserPicSchema,
   createCardSchema,
-  deleteCardSchema,
-  putLikeSchema,
-  deleteLikeSchema,
+  cardIdSchema,
 };

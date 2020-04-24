@@ -7,7 +7,7 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const { errors } = require('celebrate');
 const { celebrate } = require('celebrate');
-const { loginSchema, signUpSchema } = require('./models/joiSchemas');
+const { loginSchema, signUpSchema } = require('./middlewares').joiSchemas;
 
 const router = require('./routes');
 const { requestLogger, errorLogger, errorMiddleware, auth } = require('./middlewares');
@@ -15,13 +15,13 @@ const { login, createUser } = require('./controllers/users');
 
 const { PORT, DATABASE } = require('./config');
 
-// launching web-server
+// запускаем веб-сервер
 const app = express();
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
 });
 
-// connecting to database
+// соединяемся с базой данных
 mongoose.connect(DATABASE, {
   useNewUrlParser: true,
   useCreateIndex: true,
@@ -30,21 +30,21 @@ mongoose.connect(DATABASE, {
 });
 
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // за 15 минут
-  max: 100, // можно совершить максимум 100 запросов с одного IP
+  windowMs: 15 * 60 * 1000, // 15 минут
+  max: 100, // максимум 100 запросов с одного IP
 });
 
-// adding middlewares
+// добавляем мидлвары
 app.use(helmet());
 app.use(limiter);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// adding logger
+// добавляем логгер
 app.use(requestLogger);
 
-// adding routes
+// добавляем роуты
 app.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Сервер сейчас упадёт');
@@ -56,7 +56,7 @@ app.use('/users', auth, router.users);
 app.use('/cards', auth, router.cards);
 
 
-app.use(errorLogger); // подключаем логгер ошибок
+app.use(errorLogger); // логгер ошибок
 app.use(errors()); // обработчик ошибок celebrate
 
 app.use('*', (req, res) => {
