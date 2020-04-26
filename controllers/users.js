@@ -66,6 +66,7 @@ const login = (req, res, next) => {
         maxAge: 1000 * 3600 * 24 * 7,
         httpOnly: false,
         sameSite: true,
+        secure: NODE_ENV === 'production',
       });
       res.status(200).send({ _id: user._id });
     })
