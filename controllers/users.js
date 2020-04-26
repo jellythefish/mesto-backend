@@ -12,6 +12,13 @@ const getUsers = (req, res, next) => {
 };
 
 const getUser = (req, res, next) => {
+  User.findById(req.user._id)
+    .orFail(() => new NotFoundError('Пользователь не найден'))
+    .then((user) => res.send(user))
+    .catch(next);
+};
+
+const getUserById = (req, res, next) => {
   User.findById(req.params.id)
     .orFail(() => new NotFoundError('Пользователь не найден'))
     .then((user) => res.send({ data: user }))
@@ -57,10 +64,10 @@ const login = (req, res, next) => {
       );
       res.cookie('jwt', token, {
         maxAge: 1000 * 3600 * 24 * 7,
-        httpOnly: true,
+        httpOnly: false,
         sameSite: true,
-      })
-        .end();
+      });
+      res.status(200).send({ _id: user._id });
     })
     .catch((err) => {
       // eslint-disable-next-line no-param-reassign
@@ -69,4 +76,12 @@ const login = (req, res, next) => {
     });
 };
 
-module.exports = { getUsers, getUser, createUser, updateUserInfo, updateUserPic, login };
+module.exports = {
+  getUsers,
+  getUser,
+  getUserById,
+  createUser,
+  updateUserInfo,
+  updateUserPic,
+  login,
+};

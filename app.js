@@ -5,8 +5,9 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const { errors } = require('celebrate');
-const { celebrate } = require('celebrate');
+const { errors, celebrate } = require('celebrate');
+const cors = require('cors');
+
 const { loginSchema, signUpSchema } = require('./middlewares').joiSchemas;
 
 const router = require('./routes');
@@ -36,6 +37,14 @@ const limiter = rateLimit({
 
 // добавляем мидлвары
 app.use(helmet());
+app.use(cors({
+  origin: 'https://the-mesto.tk',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  exposedHeaders: '*',
+  credentials: true,
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+}));
 app.use(limiter);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
