@@ -5,8 +5,8 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const { errors } = require('celebrate');
-const { celebrate } = require('celebrate');
+const { errors, celebrate } = require('celebrate');
+
 const { loginSchema, signUpSchema } = require('./middlewares').joiSchemas;
 
 const router = require('./routes');
