@@ -76,6 +76,3 @@ npm i
 npm run start
 ```
 The localhost server will be launched on localhost:3000. You can successfully send requests to this address.
-
-## TO-DO
-- \[ ] дописать документацию для эндпоинтов
